@@ -1,0 +1,53 @@
+service: typescript-nextjs-aws
+
+provider:
+    name: aws
+    runtime: nodejs8.10
+    iamRoleStatements:
+        - Effect: Allow
+          Action:
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+          Resource: "arn:aws:dynamodb:us-east-1:013884789148:table/todos"
+
+plugins:
+    - serverless-plugin-typescript
+    - serverless-dynamodb-local
+    - serverless-offline
+
+functions:
+    getTodo:
+        handler: get.run
+        events:
+            - http:
+                path: todos/{id}
+                method: get
+    createTodo:
+        handler: create.run
+        events:
+            - http:
+                path: todos
+                method: post
+
+resources:
+    Resources:
+        TodosTable:
+            Type: "AWS::DynamoDB::Table"
+            Properties:
+                TableName: todos
+                AttributeDefinitions:
+                    -
+                        AttributeName: id
+                        AttributeType: S
+                KeySchema:
+                    -
+                        AttributeName: id
+                        KeyType: HASH
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 1
+                    WriteCapacityUnits: 1
+
+
+
+
+
