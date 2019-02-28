@@ -58,7 +58,6 @@ typings/
 .env
 
 .DS_Store
-*.js
 *.js.map
 .next/
 .serverless
